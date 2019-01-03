@@ -1,0 +1,8 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "version": "1.4.1",
+    "libraryName": "sp-news-viewer",
+    "libraryId": "9782dbd5-c57e-442d-8d54-98e48dec4b8a",
+    "environment": "spo"
+  }
+}

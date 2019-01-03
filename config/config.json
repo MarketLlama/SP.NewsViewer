@@ -1,0 +1,18 @@
+{
+  "$schema": "https://dev.office.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "positions-news-viewer-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/positionsNewsViewer/PositionsNewsViewerWebPart.js",
+          "manifest": "./src/webparts/positionsNewsViewer/PositionsNewsViewerWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "PositionsNewsViewerWebPartStrings": "lib/webparts/positionsNewsViewer/loc/{locale}.js"
+  }
+}
