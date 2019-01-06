@@ -26,7 +26,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
   public render(): React.ReactElement<IPositionsNewsViewerProps> {
     return (
       <div className={ styles.positionsNewsViewer }>
-        {this.state.news}
+        {this.state.news.length == 0? <h2>No News</h2> : this.state.news}
       </div>
     );
   }
@@ -76,11 +76,11 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
   private _renderNewsCell = (item : newsItem, isLast : boolean) : JSX.Element =>{
     return (
       <div className={styles.newsCell}>
-        <div className={styles.date}>
-          <i><Moment format="DD/MM/YYYY">{item.NewsDate}</Moment></i>
-        </div>
         <div className={styles.headline}>
           <h2>{item.Title}</h2>
+        </div>
+        <div className={styles.date}>
+          <i><Moment format="DD/MM/YYYY">{item.NewsDate}</Moment></i>
         </div>
         <div className={styles.content}>
           <p>{item.NewsContent}</p>

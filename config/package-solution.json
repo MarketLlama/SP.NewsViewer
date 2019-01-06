@@ -3,7 +3,7 @@
   "solution": {
     "name": "sp-news-viewer-client-side-solution",
     "id": "9782dbd5-c57e-442d-8d54-98e48dec4b8a",
-    "version": "1.0.0.0",
+    "version": "1.0.0.2",
     "includeClientSideAssets": true
   },
   "paths": {
