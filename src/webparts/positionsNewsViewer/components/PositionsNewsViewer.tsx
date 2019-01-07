@@ -5,6 +5,8 @@ import { IPositionsNewsViewerState } from './IPositionsNewsViewerState'
 import { escape } from '@microsoft/sp-lodash-subset';
 import Moment from 'react-moment';
 import {sp , Web}  from '@pnp/pnpjs';
+import { Environment, EnvironmentType, DisplayMode } from '@microsoft/sp-core-library';
+import { ActionButton } from 'office-ui-fabric-react/lib/Button';
 
 export interface newsItem {
   Title : string;
@@ -13,13 +15,16 @@ export interface newsItem {
   NewsTeaser : string;
   HighlightNews : boolean;
   NewsContent : string;
+  Id : number;
 }
 
 export default class PositionsNewsViewer extends React.Component<IPositionsNewsViewerProps, IPositionsNewsViewerState> {
+
   constructor(props) {
     super(props);
     this.state = {
-        news : []
+        news : [],
+        pageStatus : false
     };
   }
 
@@ -31,6 +36,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
     );
   }
   public componentDidMount() {
+    this._setPageStatus();
     this._renderNewsItems();
   }
 
@@ -51,7 +57,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
       try {
         const PageID = this.props.context.pageContext.listItem.id;
         sp.web.lists.getByTitle('News').items
-        .select("Title", "NewsDate", "NewsTeaser", "NewsImage", "TopNews", "HighlightNews", "NewsContent","Page/ID")
+        .select("Title", "NewsDate", "NewsTeaser", "NewsImage", "TopNews", "HighlightNews", "NewsContent","Page/ID", "Id")
         .orderBy('NewsDate', false)
         .expand("Page")
         .filter('PageId eq ' + PageID).get().then(items =>{
@@ -62,7 +68,8 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
               PageId : item.PageId,
               NewsTeaser : item,
               HighlightNews : item.HighlightNews,
-              NewsContent :  item.NewsContent
+              NewsContent :  item.NewsContent,
+              Id : item.Id
             });
           });
           resolve(newsItems);
@@ -73,9 +80,50 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
     });
   }  
 
+  private _setPageStatus = () => {
+    //Detect display mode on classic and modern pages pages
+    if(Environment.type == EnvironmentType.ClassicSharePoint){
+      let isInEditMode: boolean;
+      let interval: any;
+      interval = setInterval(function(){
+        if (typeof window['SP'].Ribbon !== 'undefined'){
+          isInEditMode = window['SP'].Ribbon.PageState.Handlers.isInEditMode();
+          if(isInEditMode){
+            this.setState({
+              pageStatus : true
+            });
+          }else{
+            this.setState({
+              pageStatus : false
+            });
+          }
+          clearInterval(interval);
+        }
+      }.bind(this),100)
+    } else if(Environment.type == EnvironmentType.SharePoint){
+      if(this.props.displayMode == DisplayMode.Edit){
+        this.setState({
+          pageStatus : true
+        });
+      }else if(this.props.displayMode == DisplayMode.Read){
+        this.setState({
+          pageStatus : false
+        });
+      }
+    }
+  }
+
   private _renderNewsCell = (item : newsItem, isLast : boolean) : JSX.Element =>{
     return (
       <div className={styles.newsCell}>
+        <div style={!this.state.pageStatus ? {display : 'none'}: { position: 'absolute', right: 0 , top: '-5px'}}>
+              <ActionButton
+                iconProps={{ iconName: 'Cancel' }}
+                onClick = {() => {this._deleteNews(item)} }
+              >
+              Delete News
+            </ActionButton>
+          </div>
         <div className={styles.headline}>
           <h2>{item.Title}</h2>
         </div>
@@ -83,10 +131,17 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
           <i><Moment format="DD/MM/YYYY">{item.NewsDate}</Moment></i>
         </div>
         <div className={styles.content}>
-          <p>{item.NewsContent}</p>
+          <p dangerouslySetInnerHTML={{__html:item.NewsContent}}></p>
         </div>
         {!isLast? <hr/> : null}
       </div>
     );
+  }
+
+  private _deleteNews = (item) =>{
+    let list = sp.web.lists.getByTitle("News");
+    list.items.getById(item.Id).delete().then(_ => {
+      this._renderNewsItems();
+    });
   }
 }

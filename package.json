@@ -16,13 +16,17 @@
     "@microsoft/sp-office-ui-fabric-core": "~1.4.1",
     "@microsoft/sp-webpart-base": "~1.4.1",
     "@pnp/pnpjs": "^1.2.7",
+    "@pnp/polyfill-ie11": "^1.0.0",
     "@types/react": "15.6.6",
     "@types/react-dom": "15.5.6",
     "@types/webpack-env": ">=1.12.1 <1.14.0",
+    "core-js": "^2.6.1",
+    "es6-map": "^0.1.5",
     "moment": "^2.23.0",
     "react": "15.6.2",
     "react-dom": "15.6.2",
-    "react-moment": "^0.8.4"
+    "react-moment": "^0.8.4",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@microsoft/sp-build-web": "~1.4.1",

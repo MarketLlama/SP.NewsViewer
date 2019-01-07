@@ -72,9 +72,8 @@
     }
   }
   .newsCell{
-    display: inline;
     background-color: white;
-
+    position: relative;
     .date{
       color: #AAB400 !important;
       font-size: 15px;
