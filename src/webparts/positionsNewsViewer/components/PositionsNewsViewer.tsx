@@ -118,17 +118,16 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
       <div className={styles.newsCell}>
         <div style={!this.state.pageStatus ? {display : 'none'}: { position: 'absolute', right: 0 , top: '-5px'}}>
               <ActionButton
-                iconProps={{ iconName: 'Cancel' }}
                 onClick = {() => {this._deleteNews(item)} }
               >
-              Delete News
+              x
             </ActionButton>
           </div>
         <div className={styles.headline}>
           <h2>{item.Title}</h2>
         </div>
         <div className={styles.date}>
-          <i><Moment format="DD/MM/YYYY">{item.NewsDate}</Moment></i>
+          <i><Moment format="YYYY-MM-DD">{item.NewsDate}</Moment></i>
         </div>
         <div className={styles.content}>
           <p dangerouslySetInnerHTML={{__html:item.NewsContent}}></p>
