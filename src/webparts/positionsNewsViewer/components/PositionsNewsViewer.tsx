@@ -31,7 +31,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
   public render(): React.ReactElement<IPositionsNewsViewerProps> {
     return (
       <div className={ styles.positionsNewsViewer }>
-        {this.state.news.length == 0? <h2>No News</h2> : this.state.news}
+        {this.state.news.length == 0? <strong>No News</strong> : this.state.news}
       </div>
     );
   }
@@ -48,11 +48,11 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
     }
     this.setState({
       news : news
-    });  
-  } 
+    });
+  }
 
   private _getNews = async() : Promise<newsItem[]> => {
-    return new Promise<newsItem[]>((resolve, reject) =>{ 
+    return new Promise<newsItem[]>((resolve, reject) =>{
       let newsItems : newsItem[] = [];
       try {
         const PageID = this.props.context.pageContext.listItem.id;
@@ -78,7 +78,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
         reject(error);
       }
     });
-  }  
+  }
 
   private _setPageStatus = () => {
     //Detect display mode on classic and modern pages pages
@@ -124,7 +124,7 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
             </ActionButton>
           </div>
         <div className={styles.headline}>
-          <h2>{item.Title}</h2>
+          <strong>{item.Title}</strong>
         </div>
         <div className={styles.date}>
           <i><Moment format="YYYY-MM-DD">{item.NewsDate}</Moment></i>
@@ -138,9 +138,11 @@ export default class PositionsNewsViewer extends React.Component<IPositionsNewsV
   }
 
   private _deleteNews = (item) =>{
-    let list = sp.web.lists.getByTitle("News");
-    list.items.getById(item.Id).delete().then(_ => {
-      this._renderNewsItems();
-    });
+    if(confirm('Continue to delete this news item?')){
+      let list = sp.web.lists.getByTitle("News");
+      list.items.getById(item.Id).delete().then(_ => {
+        this._renderNewsItems();
+      });
+    }
   }
 }
